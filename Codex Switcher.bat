@@ -51,6 +51,8 @@ goto :switch
 
 :login
 echo.
+echo Closing Codex to avoid file lock conflicts...
+call :kill_codex
 echo Starting Codex login flow...
 echo Please sign in in the browser window that opens.
 call npx @loongphy/codex-auth login
@@ -91,6 +93,8 @@ if "%TARGET_EMAIL%"=="" (
     choice /C 12 /N /M "Enter choice [1-2]: "
     if "!errorlevel!"=="1" (
         echo.
+        echo Closing Codex to avoid file lock conflicts...
+        call :kill_codex
         echo Starting Codex login flow...
         call npx @loongphy/codex-auth login
         echo.
@@ -100,11 +104,13 @@ if "%TARGET_EMAIL%"=="" (
     goto :main_menu
 )
 
+echo Closing Codex to avoid file lock conflicts...
+call :kill_codex
 echo Switching account to %TARGET_EMAIL%...
 call npx @loongphy/codex-auth switch "%TARGET_EMAIL%"
 echo.
 echo Reopening Codex...
-call :restart_codex
+call :launch_codex
 echo.
 echo Switch completed successfully!
 timeout /t 3
@@ -113,8 +119,12 @@ goto :main_menu
 :quit
 exit /b 0
 
-:restart_codex
+:kill_codex
 taskkill /IM codex.exe /F >nul 2>&1
+timeout /t 1 /nobreak >nul
+exit /b 0
+
+:launch_codex
 set "CODEX_EXE="
 for /f "delims=" %%I in ('dir /b /s /a:-d "%LOCALAPPDATA%\OpenAI\Codex\bin\*\codex.exe" 2^>nul') do (
   set "CODEX_EXE=%%~fI"
