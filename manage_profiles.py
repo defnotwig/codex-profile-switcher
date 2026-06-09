@@ -3,6 +3,7 @@ import sys
 import json
 import re
 import subprocess
+import time
 
 CONFIG_PATH = os.path.join(os.path.expanduser("~"), ".codex_profiles.json")
 TOTAL_SLOTS = 8
@@ -191,15 +192,80 @@ def show_stats():
                 stats_col = stats_part.lstrip() if stats_part else ""
                 print(f"{prefix}{email_col}{stats_col}")
 
-def print_logo():
-    logo = r"""
-  ____   ___  ____  _____ __  __
- / ___| / _ \|  _ \| ____|\ \/ /
-| |    | | | | | | |  _|   \  / 
-| |___ | |_| | |_| | |___  /  \ 
- \____| \___/|____/|_____|/_/\_\
-"""
-    print(f"{COLOR_YELLOW}{logo}{COLOR_RESET}              {COLOR_GREEN}[ Developed by @defnotwig ]{COLOR_RESET}\n")
+logo_lines = [
+    "       .---.          ",
+    "    .-'     `-.       ___  ___  ___  ___ _  _    ___ _ _ _ _ ___ ___ _  _ ___ ___ ",
+    "  _(   > _     )_    / __\\/ _ \\|   \\| __\\ \\/ /  / __\\ \\ \\ /_ _// __\\ _ \\/ __\\ _ \\\\",
+    " (               )   \\___/\\___/|___/\\___//_\\    \\___/ \\_/\\_//_/ \\___/|_| |___|_\\_\\",
+    "  `-._________.-'     "
+]
+
+def get_animation_frame(frame_num):
+    line0 = " " * 80
+    line1 = " " * 80
+    line2 = " " * 80
+    watermark = "[ Developed by @defnotwig ]"
+    
+    if frame_num == 0:
+        line0 = line0[:2] + "  O _ [Coding...]"
+        line1 = line1[:2] + " /|/ [__]"
+        line2 = line2[:2] + " / \\" + " " * 29 + watermark
+    elif frame_num == 1:
+        line0 = line0[:2] + "  O"
+        line1 = line1[:2] + " /|~  [__]"
+        line2 = line2[:2] + " / \\" + " " * 29 + watermark
+    elif frame_num in (2, 3, 4, 5):
+        cols = {2: 8, 3: 15, 4: 22, 5: 28}
+        col = cols[frame_num]
+        if frame_num % 2 == 0:
+            legs = "/ \\"
+            arms = "/|~"
+        else:
+            legs = " | "
+            arms = "~|~"
+        line0 = line0[:col] + "  O"
+        line1 = line1[:col] + " " + arms + " [__]"
+        line2 = line2[:col] + " " + legs + " " * (32 - col - 4) + watermark
+    elif frame_num == 6:
+        col = 30
+        line0 = " " * 30 + "  O"
+        line1 = " " * 30 + " /|/"
+        line2 = " " * 29 + "|| " + watermark
+        
+    return line0.rstrip(), line1.rstrip(), line2.rstrip()
+
+def animate_logo():
+    os.system('')
+    
+    l0, l1, l2 = get_animation_frame(0)
+    print(l0)
+    print(l1)
+    print(COLOR_GREEN + l2 + COLOR_RESET)
+    for line in logo_lines:
+        print(COLOR_YELLOW + line + COLOR_RESET)
+    print()
+
+    for f in range(1, 7):
+        time.sleep(0.18)
+        sys.stdout.write("\033[8A\r")
+        sys.stdout.flush()
+        
+        l0, l1, l2 = get_animation_frame(f)
+        print(l0.ljust(80))
+        print(l1.ljust(80))
+        print(COLOR_GREEN + l2.ljust(80) + COLOR_RESET)
+        for line in logo_lines:
+            print(COLOR_YELLOW + line.ljust(100) + COLOR_RESET)
+        print()
+
+def print_static_logo():
+    l0, l1, l2 = get_animation_frame(6)
+    print(l0)
+    print(l1)
+    print(COLOR_GREEN + l2 + COLOR_RESET)
+    for line in logo_lines:
+        print(COLOR_YELLOW + line + COLOR_RESET)
+    print()
 
 def main():
     if len(sys.argv) < 2:
@@ -231,7 +297,9 @@ def main():
     elif command == "show-stats":
         show_stats()
     elif command == "logo":
-        print_logo()
+        animate_logo()
+    elif command == "logo-static":
+        print_static_logo()
     else:
         print(f"Unknown command: {command}")
         sys.exit(1)
