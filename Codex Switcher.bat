@@ -10,12 +10,7 @@ python "%MANAGE_PY%" init
 
 :main_menu
 cls
-if "%PLAYED_ANIMATION%"=="" (
-    python "%MANAGE_PY%" logo
-    set "PLAYED_ANIMATION=1"
-) else (
-    python "%MANAGE_PY%" logo-static
-)
+python "%MANAGE_PY%" logo
 echo ============================================================
 echo SCANNING AND AUTO-BINDING ACCOUNTS...
 echo ============================================================
