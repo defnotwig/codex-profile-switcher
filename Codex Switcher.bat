@@ -19,7 +19,7 @@ echo.
 echo ============================================================
 echo CODEX ACCOUNTS USAGE SUMMARY AND STATS
 echo ============================================================
-call npx @loongphy/codex-auth list
+python "%MANAGE_PY%" show-stats
 echo.
 
 echo ============================================================

@@ -138,6 +138,59 @@ def show_menu():
         else:
             print(f"  [{i}]   {COLOR_GRAY}[Empty]{COLOR_RESET}")
 
+def show_stats():
+    try:
+        out = subprocess.check_output(['npx', '@loongphy/codex-auth', 'list'], text=True, shell=True)
+    except Exception as e:
+        print(f"Error fetching stats: {e}")
+        return
+
+    lines = out.splitlines()
+    if len(lines) < 2:
+        print(out)
+        return
+
+    # Print original header columns and divider line
+    print(lines[0])
+    print(lines[1])
+
+    # Parse account rows
+    stats_map = {}
+    email_regex = re.compile(r'[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}')
+    
+    for line in lines[2:]:
+        if not line.strip():
+            continue
+        match = email_regex.search(line)
+        if match:
+            email = match.group(0).lower()
+            stats_part = line[match.end():]
+            stats_map[email] = stats_part
+
+    config = load_config()
+    _, active_email = get_codex_accounts()
+    active_email_lower = active_email.lower() if active_email else ""
+
+    # Print stats in the order of slots
+    for i in range(1, TOTAL_SLOTS + 1):
+        slot_str = str(i)
+        email = config.get(slot_str, "")
+        if email:
+            email_lower = email.lower()
+            stats_part = stats_map.get(email_lower, "")
+            
+            is_active = (email_lower == active_email_lower)
+            if is_active:
+                prefix = f"{COLOR_GREEN}* {i:02d} {COLOR_RESET}"
+                email_col = f"{COLOR_GREEN}{email:<45}{COLOR_RESET}"
+                stats_col = f"{COLOR_GREEN}{stats_part.lstrip()}{COLOR_RESET}" if stats_part else ""
+                print(f"{prefix}{email_col}{stats_col}")
+            else:
+                prefix = f"  {i:02d} "
+                email_col = f"{email:<45}"
+                stats_col = stats_part.lstrip() if stats_part else ""
+                print(f"{prefix}{email_col}{stats_col}")
+
 def main():
     if len(sys.argv) < 2:
         print("Usage: python manage_profiles.py <command> [args]")
@@ -165,6 +218,8 @@ def main():
         bind_slot(sys.argv[2], sys.argv[3])
     elif command == "show-menu":
         show_menu()
+    elif command == "show-stats":
+        show_stats()
     else:
         print(f"Unknown command: {command}")
         sys.exit(1)
