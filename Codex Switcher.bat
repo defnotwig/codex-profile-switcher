@@ -10,6 +10,7 @@ python "%MANAGE_PY%" init
 
 :main_menu
 cls
+python "%MANAGE_PY%" logo
 echo ============================================================
 echo SCANNING AND AUTO-BINDING ACCOUNTS...
 echo ============================================================

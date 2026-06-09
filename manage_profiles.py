@@ -191,6 +191,16 @@ def show_stats():
                 stats_col = stats_part.lstrip() if stats_part else ""
                 print(f"{prefix}{email_col}{stats_col}")
 
+def print_logo():
+    logo = r"""
+  ____   ___  ____  _____ __  __
+ / ___| / _ \|  _ \| ____|\ \/ /
+| |    | | | | | | |  _|   \  / 
+| |___ | |_| | |_| | |___  /  \ 
+ \____| \___/|____/|_____|/_/\_\
+"""
+    print(f"{COLOR_YELLOW}{logo}{COLOR_RESET}              {COLOR_GREEN}[ Developed by @defnotwig ]{COLOR_RESET}\n")
+
 def main():
     if len(sys.argv) < 2:
         print("Usage: python manage_profiles.py <command> [args]")
@@ -220,6 +230,8 @@ def main():
         show_menu()
     elif command == "show-stats":
         show_stats()
+    elif command == "logo":
+        print_logo()
     else:
         print(f"Unknown command: {command}")
         sys.exit(1)

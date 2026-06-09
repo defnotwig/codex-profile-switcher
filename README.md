@@ -28,3 +28,9 @@ It integrates with the `@loongphy/codex-auth` CLI tool.
 1. Clone or copy this repository to your Documents folder: `C:\Users\Ludwig Rivera\Documents\codex-profile-switcher`
 2. Run `Install.bat` to copy the launcher to your Desktop.
 3. Open `Codex Switcher.bat` on your Desktop to manage profiles, switch accounts, log in new ones, or see your usage stats.
+
+---
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](file:///C:/Users/Ludwig%20Rivera/Documents/codex-profile-switcher/LICENSE) file for details.
